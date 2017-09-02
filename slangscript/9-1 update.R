@@ -28,3 +28,6 @@ cleanslang = tbl_df(unclean) %>%
          
          
 names(cleanslang)
+
+test1.1$uncertcat<-recode(test1.1$hiunc_1,"NA='low';else='high'")
+test1.1$slangcat<-recode(test1.1$knownmanipcheck, "NA='unknown';else='known'")
