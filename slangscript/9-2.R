@@ -27,8 +27,9 @@ cleanslang = tbl_df(unclean) %>%
          iv_uncer   =  ifelse(is.na(hiunc_1),"low","high"),
          iv_sl.cat=  ifelse(is.na(knownmanipcheck),"unknown","known"))
 
+#this is for cause i'm too lazy to keep looking cleanslang
 useable = cleanslang %>%
   select(dv_conf,dv_simstud,dv_unslan,dv_ent,dv_proto,dv_hsuid,dv_unc,dv_ost,iv_uncer,iv_sl.cat)
   
-names(cleanslang)
+
 
