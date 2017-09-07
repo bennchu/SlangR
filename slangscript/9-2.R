@@ -7,7 +7,7 @@ unclean <- read_csv("U:/rawslangdat.csv")
 unclean<- read_csv("C:/Users/Branly Mclanbry/Downloads/rawslangdat.csv")
 cleanslang = tbl_df(unclean) %>%
   clean_names() %>%
-  filter(progress == 100)%>%
+  filter(progress == 100) %>%
   mutate(dv_conf    = (slangconf1 + slangconf2)/2,
          dv_simstud = (simstudent_1),
          dv_unslan  = (uncertslang_1),
