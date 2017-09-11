@@ -33,7 +33,8 @@ cleanslang = tbl_df(unclean) %>%
 
 #this is for cause i'm too lazy to keep looking cleanslang
 thesis = cleanslang %>%
-  select(dv_conf,dv_simstud,dv_unslan,dv_ent,dv_proto,dv_hsuid,dv_unc,dv_ost,
+
+select(dv_conf,dv_simstud,dv_unslan,dv_ent,dv_proto,dv_hsuid,dv_unc,dv_ost,
          iv_uncer.cat,iv_uncer.num,iv_sl.cat,iv_sl.num)
 
 #similarity to students
