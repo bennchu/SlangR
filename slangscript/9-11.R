@@ -33,35 +33,63 @@ cleanslang = tbl_df(unclean) %>%
 
 #this is for cause i'm too lazy to keep looking cleanslang
 thesis = cleanslang %>%
-
 select(dv_conf,dv_simstud,dv_unslan,dv_ent,dv_proto,dv_hsuid,dv_unc,dv_ost,
-         iv_uncer.cat,iv_uncer.num,iv_sl.cat,iv_sl.num)
+       iv_uncer.cat,iv_uncer.num,iv_sl.cat,iv_sl.num,
+       age_4,gender)
 
 #similarity to students
 anovatime<-lm(dv_simstud~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
 Anova(anovatime, type = 3)
+oneway<-aov(dv_simstud~iv_uncer.cat, data=thesis)
+summary(oneway)
+otherway<-aov(dv_simstud~iv_sl.cat,data=thesis)
+summary(otherway)
 
 #slang uncertainty
 anovatime<-lm(dv_unslan~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
 Anova(anovatime, type = 3)
+oneway<-aov(dv_unslan~iv_uncer.cat, data=thesis)
+summary(oneway)
+otherway<-aov(dv_unslan~iv_sl.cat,data=thesis)
+summary(otherway)
 
 #entitativity
 anovatime<-lm(dv_ent~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
 Anova(anovatime, type = 3)
+oneway<-aov(dv_ent~iv_uncer.cat, data=thesis)
+summary(oneway)
+otherway<-aov(dv_ent~iv_sl.cat,data=thesis)
+summary(otherway)
 
 #prototypicality
 anovatime<-lm(dv_proto~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
 Anova(anovatime, type = 3)
+oneway<-aov(dv_proto~iv_uncer.cat, data=thesis)
+summary(oneway)
+otherway<-aov(dv_proto~iv_sl.cat,data=thesis)
+summary(otherway)
 
 #identification as HSU
 anovatime<-lm(dv_hsuid~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
 Anova(anovatime, type = 3)
+oneway<-aov(dv_hsuid~iv_uncer.cat, data=thesis)
+summary(oneway)
+otherway<-aov(dv_hsuid~iv_sl.cat,data=thesis)
+summary(otherway)
 
 #Overall uncertainty
 anovatime<-lm(dv_unc~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
 Anova(anovatime, type = 3)
+oneway<-aov(dv_unc~iv_uncer.cat, data=thesis)
+summary(oneway)
+otherway<-aov(dv_unc~iv_sl.cat,data=thesis)
+summary(otherway)
 
 #ostracism 
 anovatime<-lm(dv_ost~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
 Anova(anovatime, type = 3)
+oneway<-aov(dv_ost~iv_uncer.cat, data=thesis)
+summary(oneway)
+otherway<-aov(dv_ost~iv_sl.cat,data=thesis)
+summary(otherway)
 
