@@ -1,8 +1,10 @@
 library(tidyverse)
 library(janitor)
+library(car)
+options(contrasts=c("contr.helmert",  "contr.poly")) 
 
 #for when I'm at school
-unclean <- read_csv("U:/rawslangdat.csv")
+unclean <- read_csv("C:/Users/Branly Mclanbry/Downloads/slangR911.csv")
 #for when I'm at home
 unclean<- read_csv("C:/Users/Branly Mclanbry/Downloads/rawslangdat.csv")
 cleanslang = tbl_df(unclean) %>%
@@ -33,9 +35,32 @@ cleanslang = tbl_df(unclean) %>%
 thesis = cleanslang %>%
   select(dv_conf,dv_simstud,dv_unslan,dv_ent,dv_proto,dv_hsuid,dv_unc,dv_ost,
          iv_uncer.cat,iv_uncer.num,iv_sl.cat,iv_sl.num)
-demo = cleanslang %>%
-  
-tapply(thesis$dv_hsuid,thesis$iv_sl.cat, mean)
-tapply(thesis$dv_proto,thesis$iv_sl.cat, mean)
-tapply(thesis$dv_ost,thesis$iv_sl.cat, mean)
+
+#similarity to students
+anovatime<-lm(dv_simstud~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
+Anova(anovatime, type = 3)
+
+#slang uncertainty
+anovatime<-lm(dv_unslan~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
+Anova(anovatime, type = 3)
+
+#entitativity
+anovatime<-lm(dv_ent~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
+Anova(anovatime, type = 3)
+
+#prototypicality
+anovatime<-lm(dv_proto~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
+Anova(anovatime, type = 3)
+
+#identification as HSU
+anovatime<-lm(dv_hsuid~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
+Anova(anovatime, type = 3)
+
+#Overall uncertainty
+anovatime<-lm(dv_unc~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
+Anova(anovatime, type = 3)
+
+#ostracism 
+anovatime<-lm(dv_ost~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
+Anova(anovatime, type = 3)
 
