@@ -1,12 +1,14 @@
 library(tidyverse)
 library(janitor)
 library(car)
+library(foreign)
+
 options(contrasts=c("contr.helmert",  "contr.poly")) 
 
 #for when I'm at school
-unclean <- read_csv("C:/Users/Branly Mclanbry/Downloads/slangR911.csv")
-#for when I'm at home
-unclean<- read_csv("C:/Users/Branly Mclanbry/Downloads/rawslangdat.csv")
+
+unclean <- read_csv("GitHub/thesismaster/SlangR/slangscript/slangR917.csv")
+
 cleanslang = tbl_df(unclean) %>%
   clean_names()              %>%
   filter(progress == 100)    %>%
@@ -49,13 +51,13 @@ cleanslang = tbl_df(unclean) %>%
 thesis = cleanslang %>%
 select(dv_conf,dv_simstud,dv_unslan,dv_ent,dv_proto,dv_hsuid,dv_unc,dv_ost,
        iv_uncer.cat,iv_uncer.num,iv_sl.cat,iv_sl.num,
-       age_4,gender)
+       iv_gender,iv_class,iv_lang,iv_eth,iv_age)
 
 #let's get down to business, to CONTROL the huns
 cont.conf <- lm(dv_ost ~ iv_slang.cat+dv_conf, data = thesis)
 Anova(cont.conf,type = 3)
 
-?aov
+
 
 #similarity to students
 anovatime<-lm(dv_simstud~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
