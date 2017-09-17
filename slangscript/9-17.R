@@ -53,11 +53,94 @@ select(dv_conf,dv_simstud,dv_unslan,dv_ent,dv_proto,dv_hsuid,dv_unc,dv_ost,
        iv_uncer.cat,iv_uncer.num,iv_sl.cat,iv_sl.num,
        iv_gender,iv_class,iv_lang,iv_eth,iv_age)
 
-#let's get down to business, to CONTROL the huns
-cont.conf <- lm(dv_ost ~ iv_slang.cat+dv_conf, data = thesis)
+#uncertainty and confidence
+cont.conf <- aov(dv_simstud ~ iv_uncer.cat + dv_conf, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_unslan ~ iv_uncer.cat + dv_conf, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_ent ~ iv_uncer.cat + dv_conf, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_hsuid ~ iv_uncer.cat + dv_conf, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_proto ~ iv_uncer.cat + dv_conf, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_unc ~ iv_uncer.cat + dv_conf, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_ost ~ iv_uncer.cat + dv_conf, data = thesis)
+Anova(cont.conf,type = 3)
+
+#uncertainty and age
+cont.conf <- aov(dv_simstud ~ iv_uncer.cat + iv_age, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_unslan ~ iv_uncer.cat + iv_age, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_ent ~ iv_uncer.cat + iv_age, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_hsuid ~ iv_uncer.cat + iv_age, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_proto ~ iv_uncer.cat + iv_age, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_unc ~ iv_uncer.cat + iv_age, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_ost ~ iv_uncer.cat + iv_age, data = thesis)
+Anova(cont.conf,type = 3)
+
+#slang and conf
+cont.conf <- aov(dv_simstud ~ iv_sl.cat + dv_conf, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_unslan ~ iv_sl.cat + dv_conf, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_ent ~ iv_sl.cat + dv_conf, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_hsuid ~ iv_sl.cat + dv_conf, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_proto ~ iv_sl.cat + dv_conf, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_unc ~ iv_sl.cat + dv_conf, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_ost ~ iv_sl.cat + dv_conf, data = thesis)
 Anova(cont.conf,type = 3)
 
 
+#slang and age
+cont.conf <- aov(dv_simstud ~ iv_sl.cat + iv_age, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_unslan ~ iv_sl.cat + iv_age, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_ent ~ iv_sl.cat + iv_age, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_hsuid ~ iv_sl.cat + iv_age, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_proto ~ iv_sl.cat + iv_age, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_unc ~ iv_sl.cat + iv_age, data = thesis)
+Anova(cont.conf,type = 3)
+
+cont.conf <- aov(dv_ost ~ iv_sl.cat + iv_age, data = thesis)
+Anova(cont.conf,type = 3)
 
 #similarity to students
 anovatime<-lm(dv_simstud~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
