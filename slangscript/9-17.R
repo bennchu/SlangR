@@ -1,14 +1,11 @@
+#####
 library(tidyverse)
 library(janitor)
 library(car)
 library(foreign)
-
 options(contrasts=c("contr.helmert",  "contr.poly")) 
-
-#for when I'm at school
-
+#####
 unclean <- read_csv("GitHub/thesismaster/SlangR/slangscript/slangR917.csv")
-
 cleanslang = tbl_df(unclean) %>%
   clean_names()              %>%
   filter(progress == 100)    %>%
@@ -46,14 +43,14 @@ cleanslang = tbl_df(unclean) %>%
                            ifelse(nation == 5, "hispanic",
                            ifelse(nation == 6, "white", "other")))))),
          iv_age         =  as.numeric(age_4))
-
 #this is for cause i'm too lazy to keep looking cleanslang
 thesis = cleanslang %>%
-select(dv_conf,dv_simstud,dv_unslan,dv_ent,dv_proto,dv_hsuid,dv_unc,dv_ost,
-       iv_uncer.cat,iv_uncer.num,iv_sl.cat,iv_sl.num,
-       iv_gender,iv_class,iv_lang,iv_eth,iv_age)
+  select(dv_conf,dv_simstud,dv_unslan,dv_ent,dv_proto,dv_hsuid,dv_unc,dv_ost,
+         iv_uncer.cat,iv_uncer.num,iv_sl.cat,iv_sl.num,
+         iv_gender,iv_class,iv_lang,iv_eth,iv_age)
+#####
+Analysis
 
-#uncertainty and confidence
 cont.conf <- aov(dv_simstud ~ iv_uncer.cat + dv_conf, data = thesis)
 Anova(cont.conf,type = 3)
 
@@ -75,7 +72,6 @@ Anova(cont.conf,type = 3)
 cont.conf <- aov(dv_ost ~ iv_uncer.cat + dv_conf, data = thesis)
 Anova(cont.conf,type = 3)
 
-#uncertainty and age
 cont.conf <- aov(dv_simstud ~ iv_uncer.cat + iv_age, data = thesis)
 Anova(cont.conf,type = 3)
 
@@ -97,7 +93,6 @@ Anova(cont.conf,type = 3)
 cont.conf <- aov(dv_ost ~ iv_uncer.cat + iv_age, data = thesis)
 Anova(cont.conf,type = 3)
 
-#slang and conf
 cont.conf <- aov(dv_simstud ~ iv_sl.cat + dv_conf, data = thesis)
 Anova(cont.conf,type = 3)
 
@@ -141,17 +136,33 @@ Anova(cont.conf,type = 3)
 
 cont.conf <- aov(dv_ost ~ iv_sl.cat + iv_age, data = thesis)
 Anova(cont.conf,type = 3)
-
+#####
 #similarity to students
-anovatime<-lm(dv_simstud~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
+anovatime<-lm(dv_simstud~
+                iv_uncer.cat+
+                iv_sl.cat+
+                dv_conf+
+                iv_uncer.cat:iv_sl.cat+
+                iv_uncer.cat:dv_conf+
+                iv_sl.cat:dv_conf+
+                iv_sl.cat:iv_uncer.cat:dv_conf
+             , data=thesis)
 Anova(anovatime, type = 3)
 oneway<-aov(dv_simstud~iv_uncer.cat, data=thesis)
 summary(oneway)
 otherway<-aov(dv_simstud~iv_sl.cat,data=thesis)
 summary(otherway)
 
+
+
 #slang uncertainty
-anovatime<-lm(dv_unslan~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
+anovatime<-lm(dv_unslan~iv_uncer.cat+
+                iv_sl.cat+
+                dv_conf+
+                iv_uncer.cat:iv_sl.cat+
+                iv_uncer.cat:dv_conf+
+                iv_sl.cat:dv_conf+
+                iv_sl.cat:iv_uncer.cat:dv_conf, data=thesis)
 Anova(anovatime, type = 3)
 oneway<-aov(dv_unslan~iv_uncer.cat, data=thesis)
 summary(oneway)
@@ -159,7 +170,11 @@ otherway<-aov(dv_unslan~iv_sl.cat,data=thesis)
 summary(otherway)
 
 #entitativity
-anovatime<-lm(dv_ent~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
+anovatime<-lm(dv_ent~iv_uncer.cat+
+                iv_sl.cat+
+                iv_uncer.cat:iv_sl.cat+
+                iv_uncer.cat:dv_conf+
+                iv_sl.cat:iv_uncer.cat:dv_conf, data=thesis)
 Anova(anovatime, type = 3)
 oneway<-aov(dv_ent~iv_uncer.cat, data=thesis)
 summary(oneway)
@@ -167,7 +182,13 @@ otherway<-aov(dv_ent~iv_sl.cat,data=thesis)
 summary(otherway)
 
 #prototypicality
-anovatime<-lm(dv_proto~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
+anovatime<-lm(dv_proto~iv_uncer.cat+
+                iv_sl.cat+
+                dv_conf+
+                iv_uncer.cat:iv_sl.cat+
+                iv_uncer.cat:dv_conf+
+                iv_sl.cat:dv_conf+
+                iv_sl.cat:iv_uncer.cat:dv_conf, data=thesis)
 Anova(anovatime, type = 3)
 oneway<-aov(dv_proto~iv_uncer.cat, data=thesis)
 summary(oneway)
@@ -175,7 +196,13 @@ otherway<-aov(dv_proto~iv_sl.cat,data=thesis)
 summary(otherway)
 
 #identification as HSU
-anovatime<-lm(dv_hsuid~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
+anovatime<-lm(dv_hsuid~iv_uncer.cat+
+                iv_sl.cat+
+                dv_conf+
+                iv_uncer.cat:iv_sl.cat+
+                iv_uncer.cat:dv_conf+
+                iv_sl.cat:dv_conf+
+                iv_sl.cat:iv_uncer.cat:dv_conf, data=thesis)
 Anova(anovatime, type = 3)
 oneway<-aov(dv_hsuid~iv_uncer.cat, data=thesis)
 summary(oneway)
@@ -191,7 +218,12 @@ otherway<-aov(dv_unc~iv_sl.cat,data=thesis)
 summary(otherway)
 
 #ostracism 
-anovatime<-lm(dv_ost~iv_uncer.cat+iv_sl.cat+iv_uncer.cat:iv_sl.cat, data=thesis)
+anovatime<-lm(dv_ost~iv_uncer.cat+
+                iv_sl.cat+
+                dv_conf+
+                iv_uncer.cat:iv_sl.cat+
+                iv_uncer.cat:dv_conf+
+                iv_sl.cat:iv_uncer.cat:dv_conf, data=thesis)
 Anova(anovatime, type = 3)
 oneway<-aov(dv_ost~iv_uncer.cat, data=thesis)
 summary(oneway)
