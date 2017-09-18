@@ -182,13 +182,11 @@ otherway<-aov(dv_ent~iv_sl.cat,data=thesis)
 summary(otherway)
 
 #prototypicality
-anovatime<-lm(dv_proto~iv_uncer.cat+
-                iv_sl.cat+
+anovatime<-lm(dv_proto~
+                iv_uncer.cat+
                 dv_conf+
-                iv_uncer.cat:iv_sl.cat+
-                iv_uncer.cat:dv_conf+
-                iv_sl.cat:dv_conf+
-                iv_sl.cat:iv_uncer.cat:dv_conf, data=thesis)
+                iv_uncer.cat:dv_conf
+              , data=thesis)
 Anova(anovatime, type = 3)
 oneway<-aov(dv_proto~iv_uncer.cat, data=thesis)
 summary(oneway)
