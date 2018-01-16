@@ -3,9 +3,12 @@ library(tidyverse)
 library(janitor)
 library(car)
 library(foreign)
+library(lm.beta)
+library(lsr)
 options(contrasts=c("contr.helmert",  "contr.poly")) 
 #####
 unclean <-  read_csv("C:/Users/bc1256/Desktop/Humboldt Slangiversity_October 25, 2017_12.23.csv")
+unclean <- read_csv("C:/Users/Branly Mclanbry/Downloads/Humboldt+Slangiversity_October+25%2C+2017_22.45/Humboldt Slangiversity_October 25, 2017_22.45.csv")
 cleanslang = tbl_df(unclean) %>%
   clean_names()              %>%
   filter(progress == 100)    %>%
@@ -99,66 +102,6 @@ corrplot(thesis.corrplot, method = "number")
 #####Analysis
 
 cont.conf <- aov(dv_simstud ~ iv_uncer.cat + dv_conf, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_unslan ~ iv_uncer.cat + dv_conf, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_ent ~ iv_uncer.cat + dv_conf, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_hsuid ~ iv_uncer.cat + dv_conf, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_proto ~ iv_uncer.cat + dv_conf, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_unc ~ iv_uncer.cat + dv_conf, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_ost ~ iv_uncer.cat + dv_conf, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_simstud ~ iv_uncer.cat + iv_age, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_unslan ~ iv_uncer.cat + iv_age, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_ent ~ iv_uncer.cat + iv_age, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_hsuid ~ iv_uncer.cat + iv_age, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_proto ~ iv_uncer.cat + iv_age, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_unc ~ iv_uncer.cat + iv_age, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_ost ~ iv_uncer.cat + iv_age, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_simstud ~ iv_sl.cat + dv_conf, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_unslan ~ iv_sl.cat + dv_conf, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_ent ~ iv_sl.cat + dv_conf, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_hsuid ~ iv_sl.cat + dv_conf, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_proto ~ iv_sl.cat + dv_conf, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_unc ~ iv_sl.cat + dv_conf, data = thesis)
-Anova(cont.conf,type = 3)
-
-cont.conf <- aov(dv_ost ~ iv_sl.cat + dv_conf, data = thesis)
 Anova(cont.conf,type = 3)
 
 
@@ -350,8 +293,7 @@ tapply(thesis$dv_unslan, list(thesis$iv_uncer.cat,thesis$iv_sl.cat),mean)
 anovatime<-lm(dv_ent~
                 dv_conf +
                 iv_uncer.cat + 
-                iv_sl.cat + 
-                iv_uncer.cat:iv_sl.cat , data=thesis)
+                iv_sl.cat + iv_uncer.cat:iv_sl.cat , data=thesis)
 Anova(anovatime, type = 3)
 tapply(thesis$dv_ent, list(thesis$iv_uncer.cat,thesis$iv_sl.cat),mean)
 #prototypicality
@@ -378,11 +320,15 @@ anovatime<-lm(dv_unc~
                 iv_uncer.cat:iv_sl.cat , data=thesis)
 Anova(anovatime, type = 3)
 tapply(thesis$dv_unc, list(thesis$iv_uncer.cat,thesis$iv_sl.cat),mean)
+
 #ostracism 
-anovatime<-lm(dv_ost~
-                dv_conf +
-                iv_uncer.cat + 
-                iv_sl.cat + 
-                iv_uncer.cat:iv_sl.cat , data=thesis)
+anovatime<-lm(dv_ost~iv_uncer.cat:iv_sl.cat:dv_conf , data=thesis)
 Anova(anovatime, type = 3)
-tapply(thesis$dv_ost, list(thesis$iv_uncer.cat,thesis$iv_sl.cat),mean)
+summary(anovatime)
+lm.beta(anovatime)
+#similarity to students
+lm.beta(anovatime)
+anovatime<-lm(dv_simstud~iv_uncer.cat:iv_sl.cat:dv_conf , data=thesis)
+Anova(anovatime, type = 3)
+summary(anovatime)
+lm.beta(anovatime)
