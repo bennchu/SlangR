@@ -56,6 +56,8 @@ cleanslang <- cleanslang %>%
   mutate(
     manippers = case_when(iv_sl.cat == "known" & dv_conf > 4 ~ "hiknown",
                           iv_sl.cat == "unknown" & dv_conf < 4 ~ "lounknown"),
+    manippers.num = case_when(iv_sl.cat == "known" & dv_conf > 4 ~ 1,
+                          iv_sl.cat == "unknown" & dv_conf < 4 ~ 0),
     dv_simstud_log = log10((max(dv_simstud) - dv_simstud) +1),
     dv_proto_sqrt  = (dv_proto+1)^.5,
     dv_hsuid_sqrt  = (dv_hsuid+1)^.5
@@ -102,7 +104,7 @@ thesis <- cleanslang %>%
   select(dv_conf,dv_simstud,dv_unslan,dv_ent,dv_proto,dv_hsuid,
          dv_unc,dv_ost,iv_uncer.cat,iv_sl.cat,iv_sl.num,iv_uncer.num,
          iv_gender,iv_class,iv_lang,iv_eth,iv_age, dv_simstud_log,
-         dv_proto_sqrt,dv_hsuid_sqrt, manippers) %>%
+         dv_proto_sqrt,dv_hsuid_sqrt, manippers, manippers.num) %>%
   na.omit()
 
 write_sav(thesis, "benthesis-postmanip.sav")
@@ -153,14 +155,14 @@ describe.1[2,2]
 low <- thesis %>% filter(iv_uncer.cat == "low")
 high <- thesis %>% filter(iv_uncer.cat == "high")
 
-test.1 <- aov(dv_proto~manippers, data = low)
-test.2 <- aov(dv_proto~manippers, data = high)
+test.1 <- aov(dv_proto ~ manippers, data = low)
+test.2 <- aov(dv_proto ~ manippers, data = high)
 
 test.1a <- Anova(test.1, type = "III")
 test.2a <- Anova(test.2, type = "III")
 
-sswin <- anovatime.1[5,1]
-dfwin <- anovatime.1[5,2]
+sswin <- anovatime.1[6,1]
+dfwin <- anovatime.1[6,2]
 ssse1 <- test.1a[2,1]
 dfse1 <- test.1a[2,2]
 ssse2 <- test.2a[2,1]
@@ -200,6 +202,95 @@ describe.1[2,2]
 
 #hypothesis 6
 
+model7 <- function(iv, dv, med, mod, data, samples=5000) {
+  
+  if (all(data[,mod] == 0 | data[,mod] == 1)) {
+    
+    data[,"ivxmod"] <- data[,iv]*data[,mod]
+    model <- paste0(med, " ~ a1*", iv, " + a2*", mod, " + a3*ivxmod
+                    ", dv, " ~ b*", med, " + cp*", iv, "
+                    imm := a3*b
+                    ind_0 := a1*b
+                    ind_1 := a1*b + imm")
+    set.seed(1839)
+    out <- lavaan::parameterEstimates(
+      lavaan::sem(model=model, data=data, se="boot", bootstrap=samples), 
+      boot.ci.type="bca.simple")
+    out[c(14:16),c(6:8)] <- NA
+    out <- out[c(1:5, 14:16),c(4:10)]
+    rownames(out) <- 1:nrow(out)
+    return(out)
+  
+  } else{
+    
+    data[,"ivxmod"] <- data[,iv]*data[,mod]
+    model <- paste0(med, " ~ a1*", iv, " + a2*", mod, " + a3*ivxmod
+                    ", dv, " ~ b*", med, " + cp*", iv, "
+                    imm := a3*b
+                    ", mod, " ~ modmean*1
+                    ", mod, " ~~ modvar*", mod, "
+                    ind_lo := a1*b + imm*-sqrt(modvar)
+                    ind_mn := a1*b + imm*modmean
+                    ind_hi := a1*b + imm*sqrt(modvar)")
+    set.seed(1839)
+    out <- lavaan::parameterEstimates(
+      lavaan::sem(model=model, data=data, se="boot", bootstrap=samples), 
+      boot.ci.type="bca.simple")
+    out[c(17:20),c(6:8)] <- NA
+    out <- out[c(1:5, 17:20),c(4:10)]
+    rownames(out) <- 1:nrow(out)
+    return(out)
+  }
+}
+ 
+model14 <- function(iv, dv, med, mod, data, samples=5000) {
+  
+  if (all(data[,mod] == 0 | data[,mod] == 1)) {
+  
+    data[,"medxmod"] <- data[,med]*data[,mod]
+    model <- paste0(med, " ~ a*", iv, "
+                    ", dv, " ~ b1*", med, " + b2*", mod, " + b3*medxmod + cp*", iv, "
+                    imm := a*b3
+                    ind_0 := a*b1
+                    ind_1 := a*b1 + imm")
+    set.seed(1839)
+    out <- lavaan::parameterEstimates(
+      lavaan::sem(model=model, data=data, se="boot", bootstrap=samples), 
+      boot.ci.type="bca.simple")
+    out[c(14:16),c(6:8)] <- NA
+    out <- out[c(1:5, 14:16),c(4:10)]
+    rownames(out) <- 1:nrow(out)
+    return(out)
+    
+  } else {
+    
+    data[,"medxmod"] <- data[,med]*data[,mod]
+    model <- paste0(med, " ~ a*", iv, "
+                ", dv, " ~ b1*", med, " + b2*", mod, " + b3*medxmod + cp*", iv, "
+                imm := a*b3
+                
+                ", mod, " ~ modmean*1
+                ", mod, " ~~ modvar*", mod, "
+                ind_lo := a*b1 + imm*-sqrt(modvar)
+                ind_mn := a*b1 + imm*modmean
+                ind_hi := a*b1 + imm*sqrt(modvar)")
+    set.seed(1839)
+    out <- lavaan::parameterEstimates(
+      lavaan::sem(model=model, data=data, se="boot", bootstrap=samples), 
+      boot.ci.type="bca.simple")
+    out[c(17:20),c(6:8)] <- NA
+    out <- out[c(1:5, 17:20),c(4:10)]
+    rownames(out) <- 1:nrow(out)
+    return(out)
+  }
+}
+
+mod7result <-   model7(iv = "manippers.num", dv = "dv_hsuid", med = "dv_proto", mod = "iv_uncer.num", thesis)
+mod14result <- model14(iv = "manippers.num", dv = "dv_hsuid", med = "dv_proto", mod = "iv_uncer.num", thesis)
+
+kable(mod7result)
+kable(mod14result)
+
 #hypothesis 7
 anovatime<-lm(dv_ent~
                 iv_uncer.num*manippers
@@ -208,9 +299,9 @@ Anova(anovatime, type = 3)
 confint(anovatime)
 etaSquared(anovatime)
 mean.1 <-tapply(thesis$dv_ent,list(thesis$iv_sl.cat,thesis$iv_uncer.cat),mean)
-yup<-tapply(thesis$dv_ent,list(thesis$iv_sl.cat,thesis$iv_uncer.cat),describe)
+describe.1 <-tapply(thesis$dv_ent,list(thesis$iv_sl.cat,thesis$iv_uncer.cat),describe)
 mean.1 
-describe[1,1]
-describe[1,2]
-describe[2,1]
-describe[2,2]
+describe.1[1,1]
+describe.1[1,2]
+describe.1[2,1]
+describe.1[2,2]
